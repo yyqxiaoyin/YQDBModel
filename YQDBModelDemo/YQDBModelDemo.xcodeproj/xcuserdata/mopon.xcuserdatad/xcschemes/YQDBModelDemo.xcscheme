@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "26BD09671CEDA68200599155"
+               BlueprintIdentifier = "268C404B1CEDB01E00BB56E2"
                BuildableName = "YQDBModelDemo.app"
                BlueprintName = "YQDBModelDemo"
                ReferencedContainer = "container:YQDBModelDemo.xcodeproj">
@@ -32,7 +32,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "26BD09801CEDA68200599155"
+               BlueprintIdentifier = "268C40641CEDB01E00BB56E2"
                BuildableName = "YQDBModelDemoTests.xctest"
                BlueprintName = "YQDBModelDemoTests"
                ReferencedContainer = "container:YQDBModelDemo.xcodeproj">
@@ -42,7 +42,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "26BD098B1CEDA68200599155"
+               BlueprintIdentifier = "268C406F1CEDB01E00BB56E2"
                BuildableName = "YQDBModelDemoUITests.xctest"
                BlueprintName = "YQDBModelDemoUITests"
                ReferencedContainer = "container:YQDBModelDemo.xcodeproj">
@@ -52,7 +52,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "26BD09671CEDA68200599155"
+            BlueprintIdentifier = "268C404B1CEDB01E00BB56E2"
             BuildableName = "YQDBModelDemo.app"
             BlueprintName = "YQDBModelDemo"
             ReferencedContainer = "container:YQDBModelDemo.xcodeproj">
@@ -75,7 +75,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "26BD09671CEDA68200599155"
+            BlueprintIdentifier = "268C404B1CEDB01E00BB56E2"
             BuildableName = "YQDBModelDemo.app"
             BlueprintName = "YQDBModelDemo"
             ReferencedContainer = "container:YQDBModelDemo.xcodeproj">
@@ -94,7 +94,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "26BD09671CEDA68200599155"
+            BlueprintIdentifier = "268C404B1CEDB01E00BB56E2"
             BuildableName = "YQDBModelDemo.app"
             BlueprintName = "YQDBModelDemo"
             ReferencedContainer = "container:YQDBModelDemo.xcodeproj">

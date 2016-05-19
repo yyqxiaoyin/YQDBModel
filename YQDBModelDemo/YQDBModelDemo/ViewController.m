@@ -12,7 +12,6 @@
 @interface ViewController ()
 
 @property (nonatomic ,strong)YQModel *model;
-
 @end
 
 @implementation ViewController
@@ -56,5 +55,4 @@
     [model deleteObject];
     
 }
-
 @end
