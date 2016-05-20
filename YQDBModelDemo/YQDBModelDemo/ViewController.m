@@ -23,6 +23,7 @@
     self.model.age = 13;
     self.model.type = @"type1";
     self.model.testClumn = @"testClum1";
+    
 }
 
 - (IBAction)save:(id)sender {

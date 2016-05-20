@@ -49,6 +49,7 @@
         
 //        获取属性类型等参数
         NSString *propertyType = [NSString stringWithUTF8String:property_getAttributes(property)];
+
         
         if ([propertyType hasPrefix:@"T@"]) {
             [proTypes addObject:SQLTEXT];

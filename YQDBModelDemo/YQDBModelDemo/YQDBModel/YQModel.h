@@ -6,6 +6,7 @@
 //  Copyright © 2016年 Mopon. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
 #import "YQDBModel.h"
 
 @interface YQModel : DBModel
