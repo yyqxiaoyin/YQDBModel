@@ -1,0 +1,5 @@
+
+
+target 'YQDBModel' do
+   pod 'FMDB'
+end
