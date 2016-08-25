@@ -10,6 +10,7 @@
 #import "YQDBModel/YQDBHelper.h"
 #import "TestModel.h"
 
+
 @interface ViewController ()
 
 @property (nonatomic ,strong)TestModel *model;
@@ -22,8 +23,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    
+
+
     
     UIImageView *imageView = [[UIImageView alloc]init];
     imageView.frame = CGRectMake(200, 200, 100, 100);
@@ -43,8 +44,11 @@
     model.level = 5;
     model.head = [UIImage imageNamed:@"meinv"];
     
+    model.myModel = [[MyModel alloc]init];
+    
     _model = model;
     
+
 }
 - (IBAction)insert:(id)sender {
     
@@ -57,7 +61,18 @@
     model.weight = 120.54;
     model.level = 5;
     model.head = [UIImage imageNamed:@"meinv"];
+    model.arr = @[@"1个",@"2个",@"3个"];
+    model.arr1 = [NSMutableArray arrayWithObjects:@"可变1",@"可变2",@"可变3", nil];
+    model.dict = @{@"1":@"一"};
+    
+    MyModel *myModel = [[MyModel alloc]init];
+    myModel.subName = @"hahahahahah";
+    model.myModel = myModel;
+    model.myModel.dic = @{@"M":@"模型"};
+    
     [model save];
+    
+    NSLog(@"%@",model);
 }
 - (IBAction)delete:(id)sender {
     
@@ -102,12 +117,22 @@
     
     NSLog(@"%@ class = %@",model.head,[model.head class]);
     
+    NSArray *arr = model.arr;
+    
+    NSMutableArray *arr1 = model.arr1;
+    
+    NSLog(@"%@  %@",arr,[model.arr class]);
+    
+    NSLog(@"可变:%@  %@",arr1,[model.arr1 class]);
+    
+    NSDictionary *dic = model.dict;
+    NSLog(@"%@  %@",dic,[model.dict class]);
+    
+    NSLog(@"%@ %@",model.myModel.subName,[model.myModel class]);
+    NSLog(@"%@ %@",model.myModel.dic,[model.myModel class]);
+    
     self.imageView.image = model.head;
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
 @end

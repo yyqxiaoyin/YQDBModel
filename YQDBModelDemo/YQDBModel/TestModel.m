@@ -10,3 +10,8 @@
 @implementation TestModel
 
 @end
+@implementation MyModel
+
+
+
+@end

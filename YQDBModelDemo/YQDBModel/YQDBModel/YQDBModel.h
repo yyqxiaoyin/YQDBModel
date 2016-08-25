@@ -18,7 +18,7 @@
 #define PrimaryKey  @"PRIMARY KEY AUTOINCREMENT"//主键类型
 #define primaryId   @"pk"//主键名
 
-@interface YQDBModel : NSObject
+@interface YQDBModel : NSObject<NSCoding>
 
 /**
  *  主键id
@@ -83,5 +83,6 @@
  *  查询当前表的所有数据
  */
 +(NSArray *)findAllObject;
+
 
 @end

@@ -29,7 +29,36 @@
         NSDictionary *dict = [self.class getAllProperties];
         _columeNames = [NSMutableArray arrayWithArray:[dict objectForKey:@"name"]];
         _columeTypes = [NSMutableArray arrayWithArray:[dict objectForKey:@"type"]];
+    }
+    return self;
+}
+
+-(void)encodeWithCoder:(NSCoder *)aCoder{
+
+    [_columeNames enumerateObjectsUsingBlock:^(NSString*  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         
+        [aCoder encodeObject:[self valueForKey:obj] forKey:obj];
+        
+    }];
+}
+
+-(instancetype)initWithCoder:(NSCoder *)aDecoder{
+
+    if (self = [super init]) {
+        NSDictionary *dict = [self.class getAllProperties];
+        NSMutableArray *columeNames = [NSMutableArray arrayWithArray:[dict objectForKey:@"name"]];
+        NSMutableArray *columeTypes = [NSMutableArray arrayWithArray:[dict objectForKey:@"type"]];
+        
+        for (int i= 0; i<columeNames.count; i++) {
+            
+            NSString *columeName = columeNames[i];
+            NSString *type = columeTypes[i];
+            
+            if ([type isEqualToString:SQLTEXT] ||[type isEqualToString:SQLBLOB]) {
+                
+                [self setValue:[aDecoder decodeObjectForKey:columeName] forKey:columeName];
+            }
+        }
     }
     return self;
 }
@@ -109,9 +138,6 @@
             return NO;
         }
     }
-    
-    NSLog(@"%s 创建表成功",__func__);
-    
     return YES;
 }
 
@@ -120,7 +146,6 @@
 
     NSMutableArray *proNames = @[].mutableCopy;
     NSMutableArray *proTypes = @[].mutableCopy;
-    
     unsigned int count = 0;
     
     Ivar *ivarList = class_copyIvarList([self class], &count);
@@ -135,29 +160,35 @@
         
         //获取属性类型
         NSString *propertyType = [NSString stringWithUTF8String:ivar_getTypeEncoding(ivar)];
-
-        //判断属性类型
-        if ([propertyType containsString:@"NS"] || [propertyType containsString:@"UIImage"]) {
+        
+        
+        if ([propertyType containsString:@"NS"] || [propertyType containsString:@"UI"]) {
+            
             //裁剪字符串中包含的转义字符
             NSRange range = [propertyType rangeOfString:@"\""];
             propertyType = [propertyType substringFromIndex:range.location +range.length];
             range = [propertyType rangeOfString:@"\""];
             propertyType = [propertyType substringToIndex:range.location];
-            if ([propertyType isEqualToString:@"UIImage"]) {
-                
-                [proTypes addObject:SQLBLOB];//二进制
-            }else{
+            
+            //判断属性类型
+            if ([propertyType isEqualToString:@"NSString"]) {
                 
                 [proTypes addObject:SQLTEXT];//文本类型
+                
             }
-            //NSString NSNumber NSData UIImage 统一用字符串保存
-            //把属性类型添加到类型数组
-        }else if ([propertyType isEqualToString:@"i"] || [propertyType isEqualToString:@"q"]){
+            else {
+                
+                [proTypes addObject:SQLBLOB];//二进制类型
+            }
+        }
+        else if ([propertyType isEqualToString:@"i"] || [propertyType isEqualToString:@"q"]){
             [proTypes addObject:SQLINTEGER];//整形
         }else if ([propertyType isEqualToString:@"f"] || [propertyType isEqualToString:@"d"]){
             [proTypes addObject:SQLREAL];//浮点类型
+        }else{
+            
+            [proTypes addObject:SQLBLOB];//二进制类型
         }
-        
     }
     
     free(ivarList);
@@ -168,12 +199,14 @@
 +(NSDictionary *)getAllProperties{
 
     NSDictionary *dict = [self getProperties];
-    NSMutableArray *proNames = [NSMutableArray array];
-    NSMutableArray *proTypes = [NSMutableArray array];
+    NSMutableArray *proNames = @[].mutableCopy;
+    NSMutableArray *proTypes = @[].mutableCopy;
+    
     [proNames addObject:primaryId];//添加上主键的名字
     [proTypes addObject:[NSString stringWithFormat:@"%@ %@",SQLINTEGER,PrimaryKey]];//添加主键的类型。自增长
     [proNames addObjectsFromArray:[dict objectForKey:@"name"]];//添加子类的属性名
     [proTypes addObjectsFromArray:[dict objectForKey:@"type"]];//添加子类的属性类型
+    
     return [NSDictionary dictionaryWithObjectsAndKeys:proNames,@"name",proTypes,@"type",nil];
 }
 
@@ -218,15 +251,14 @@
         [valueString appendFormat:@"?,"];
         
         id value = [self valueForKey:proName];
-        NSLog(@"%@",[value class]);
         if (!value) {
             
             value = @"";
         }
-        if ([value isKindOfClass:[UIImage class]]) {//图片类型
-            UIImage *image = (UIImage *)value;
-            NSData *imageData = UIImagePNGRepresentation(image);
-            value = imageData;
+        NSString *columnType = [self.columeTypes objectAtIndex:i];
+        if ([columnType isEqualToString:SQLBLOB]) {//二进制类型
+            NSData *data = [NSKeyedArchiver archivedDataWithRootObject:value];
+            value = data;
         }
         
         [insertValues addObject:value];
@@ -342,16 +374,18 @@
                 
                 NSString *columnName = [model.columeNames objectAtIndex:i];
                 NSString *columnType = [model.columeTypes objectAtIndex:i];
-                NSLog(@"%@",columnType);
+        
                 if ([columnType isEqualToString:SQLTEXT]) {
                     
                     [model setValue:[resultSet stringForColumn:columnName] forKey:columnName];
                     
                 }else if ([columnType isEqualToString:SQLBLOB]) {
-                 
-                    UIImage *image = [UIImage imageWithData:[resultSet dataForColumn:columnName]];
                     
-                    [model setValue:image forKey:columnName];
+                    NSData *data = [resultSet dataForColumn:columnName];
+                    
+                    id value = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+                    
+                    [model setValue:value forKey:columnName];
                     
                 }else{
                 
@@ -364,6 +398,20 @@
     }];
     
     return results;
+}
+
+-(NSString *)description{
+
+
+    NSMutableString *str = [NSMutableString stringWithFormat:@"\n%@:\n",NSStringFromClass([self class])];
+    
+    for (int i =0; i<_columeNames.count; i++) {
+        
+        [str appendFormat:@"\n%@ = %@",_columeNames[i],[self valueForKey:_columeNames[i]]];
+    }
+    
+    return str;
+    
 }
 
 @end
